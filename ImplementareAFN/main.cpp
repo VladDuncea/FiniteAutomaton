@@ -20,7 +20,7 @@ struct state
 	bool f_state;
 };
 
-void afisare(int n, state states[])
+void display_automaton(int n, state states[])
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -38,6 +38,36 @@ void afisare(int n, state states[])
 		}
 		cout << endl;
 	}
+}
+
+bool check_word(state *state,char word[],int wpoz)
+{
+	int len;
+	len = strlen(word);
+	bool ok=false;
+	
+	//Lambda word
+	if (wpoz == len)
+	{
+		if (state->f_state)
+			return true;
+		return false;
+	}
+
+	//Check if a tranzition is available
+	for (int i = 0; i < state->nr_tranz; i++)
+	{
+		if (state->tranz[i].letter == word[wpoz])
+		{
+			state = state->tranz[i].next_state;
+			ok = true;
+		}
+	}
+			
+	if(ok)
+		return check_word(state,word,wpoz+1);
+
+	return false;
 }
 
 int main()
@@ -92,7 +122,23 @@ int main()
 		pstates[s1].tranz[n - 1].next_state = &pstates[s2];
 	}
 	cout << "Initial state: " << initial->state_id << endl<<endl;
-	afisare(n, pstates);
+	display_automaton(n, pstates);
+
+	//Read words
+	while (true)
+	{
+		char word[100];
+		cout << "Try word ?(y,n)";
+		cin >> word;
+
+		if (word[0] == 'n')
+			return 0;
+
+		cout << "Insert word: ";
+		cin >> word;
+		cout << check_word(initial, word, 0);
+	}
+	
 
 	return 0;
 }

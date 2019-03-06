@@ -11,6 +11,8 @@ int main()
 	FiniteAutomaton fa;
 	fa.initialize();
 	fa.display_automaton();
+	cout << (fa.check_nedet() ? "AFN !" : "AFD !");
+	cout << endl;
 	//Read words
 	while (true)
 	{
@@ -24,6 +26,7 @@ int main()
 		cout << "Insert word: ";
 		cin >> word;
 		fa.check_word(word);
+		
 	} 
 
 

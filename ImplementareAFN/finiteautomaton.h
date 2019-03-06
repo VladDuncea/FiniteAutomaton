@@ -3,8 +3,11 @@
 #include <cstdlib>
 #include <string.h>
 #include <queue>
+#include <vector>
 
 using namespace std;
+
+
 
 class FiniteAutomaton
 {
@@ -19,7 +22,8 @@ class FiniteAutomaton
 	state * pstates, *initial;
 	int nr_states, spacing;
 	queue<check_word_params> q;
-	bool priv_check_word(char *word);
+	bool priv_check_word(char *);
+	static bool tranz_sort(tranzition, tranzition);
 
 public:
 	FiniteAutomaton()
@@ -39,4 +43,6 @@ public:
 	int initialize(void);
 	void display_automaton(void);
 	bool check_word(char * word);
+	bool check_nedet(void);
 };
+

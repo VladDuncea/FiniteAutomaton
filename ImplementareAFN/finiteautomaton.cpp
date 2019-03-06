@@ -10,7 +10,8 @@ struct FiniteAutomaton::state
 {
 	int state_id;
 	//Maybe use vectors
-	tranzition *tranz;
+
+	vector<tranzition> tranz;
 	int nr_tranz;
 	bool f_state;
 };
@@ -21,16 +22,19 @@ void FiniteAutomaton::add_tranzition()
 	char l;
 	cin >> s1 >> s2 >> l;
 	int n = ++(pstates[s1].nr_tranz);
-	tranzition * aux = (tranzition *)realloc(pstates[s1].tranz, n * sizeof(tranzition));
-	if (aux == NULL)
-	{
-		cerr << "Eroare alocare memorie";
-		exit(-1);
-	}
+	tranzition toAdd;
+	toAdd.letter = l;
+	toAdd.next_state = &pstates[s2];
 
-	pstates[s1].tranz = aux;
-	pstates[s1].tranz[n - 1].letter = l;
-	pstates[s1].tranz[n - 1].next_state = &pstates[s2];
+	//Add directly the first tranzition
+	if (n == 1)
+	{
+		pstates[s1].tranz.push_back(toAdd);
+	}
+	else
+	{
+		pstates[s1].tranz.insert(upper_bound(pstates[s1].tranz.begin(), pstates[s1].tranz.end(), toAdd, tranz_sort), toAdd);
+	}
 }
 
 bool FiniteAutomaton::check_word(char *word)
@@ -45,6 +49,19 @@ bool FiniteAutomaton::check_word(char *word)
 	bool result = priv_check_word(word);
 	cout << "The word : " << word << " is " << (result ? "correct" : "incorrect") << endl;
 	return result;
+}
+
+bool FiniteAutomaton::check_nedet(void)
+{
+	for (int j = 0; j < nr_states; j++)
+	{
+		for (int i=0;i<pstates[j].tranz.size()-1;i++)
+		{
+			if (pstates[j].tranz[i].letter == pstates[j].tranz[i+1].letter)
+				return true;
+		}
+	}
+	return false;
 }
 
 void FiniteAutomaton::display_automaton()
@@ -98,7 +115,6 @@ int FiniteAutomaton::initialize()
 	{
 		pstates[i].state_id = i;
 		pstates[i].nr_tranz = 0;
-		pstates[i].tranz = NULL;
 		pstates[i].f_state = false;
 	}
 
@@ -171,12 +187,18 @@ bool FiniteAutomaton::priv_check_word(char * word)
 			cwp.cur_state = cur_state->tranz[i].next_state;
 			cwp.wpoz = wpoz + 1;
 			q.push(cwp);
-
 		}
 	}
 
 	//Cicle until queue is empty
 	return priv_check_word(word);
+}
+
+bool FiniteAutomaton::tranz_sort(tranzition a, tranzition b)
+{
+	if (a.letter < b.letter)
+		return true;
+	return false;
 }
 
 void FiniteAutomaton::set_initial()

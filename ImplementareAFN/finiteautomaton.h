@@ -4,6 +4,7 @@
 #include <string.h>
 #include <queue>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -22,6 +23,7 @@ class FiniteAutomaton
 	state * pstates, *initial;
 	int nr_states, spacing;
 	queue<check_word_params> q;
+	vector<char> alphabet;
 	bool priv_check_word(char *);
 	static bool tranz_sort(tranzition, tranzition);
 
@@ -41,8 +43,10 @@ public:
 	void add_tranzition(void);
 	void del_tranzition(){}
 	int initialize(void);
+	void display_alphabet(void);
 	void display_automaton(void);
 	bool check_word(char * word);
 	bool check_nedet(void);
+	FiniteAutomaton * export_DFA(void);
 };
 

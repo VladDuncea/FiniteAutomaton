@@ -26,13 +26,27 @@ void FiniteAutomaton::add_tranzition()
 	toAdd.letter = l;
 	toAdd.next_state = &pstates[s2];
 
-	//Add directly the first tranzition
+	//Check if the letter is new tot the alphabet
+	if (alphabet.empty())
+	{
+		//First letter in alphabet
+		alphabet.push_back(l);
+	}
+	else
+	{
+		//Place them in alphabetic order
+		alphabet.insert(upper_bound(alphabet.begin(), alphabet.end(),l),l);
+	}
+
+	
 	if (n == 1)
 	{
+		//Add directly the first tranzition
 		pstates[s1].tranz.push_back(toAdd);
 	}
 	else
 	{
+		//Keep the vector sorted
 		pstates[s1].tranz.insert(upper_bound(pstates[s1].tranz.begin(), pstates[s1].tranz.end(), toAdd, tranz_sort), toAdd);
 	}
 }
@@ -53,15 +67,35 @@ bool FiniteAutomaton::check_word(char *word)
 
 bool FiniteAutomaton::check_nedet(void)
 {
-	for (int j = 0; j < nr_states; j++)
+	for (int i = 0; i < nr_states; i++)
 	{
-		for (int i=0;i<pstates[j].tranz.size()-1;i++)
+		for (int j = 1; j < pstates[i].tranz.size() && !pstates[i].tranz.empty(); j++)
 		{
-			if (pstates[j].tranz[i].letter == pstates[j].tranz[i+1].letter)
+			if (pstates[i].tranz[j-1].letter == pstates[i].tranz[j].letter)
 				return true;
 		}
 	}
 	return false;
+}
+
+FiniteAutomaton * FiniteAutomaton::export_DFA(void)
+{
+	//check if the automaton is nedeterministic
+	if (!check_nedet())
+	{
+		//if not print acordingly and stop
+		cout << "this finiteautomaton is not nedeterminisitc !";
+		return NULL;
+	}
+
+	typedef map<char, char[10]> letter_state;
+	map<int, letter_state>  nfa_table;
+
+	/*for (int i = 0; i < nr_states; i++)
+	{
+		letter_state x;
+		x.insert();
+	}*/
 }
 
 void FiniteAutomaton::display_automaton()
@@ -140,6 +174,17 @@ int FiniteAutomaton::initialize()
 		add_tranzition();
 	}
 	return 0;
+}
+
+void FiniteAutomaton::display_alphabet(void)
+{
+
+	cout<< "Used alphabet: ";
+	for (const auto &x : alphabet)
+	{
+		cout << x << " ";
+	}
+	cout << endl;
 }
 
 bool FiniteAutomaton::priv_check_word(char * word)

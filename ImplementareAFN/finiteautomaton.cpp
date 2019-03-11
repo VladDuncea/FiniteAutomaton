@@ -1,21 +1,5 @@
 #include "finiteautomaton.h"
 
-struct FiniteAutomaton::tranzition
-{
-	struct state *next_state;
-	char letter;
-};
-
-struct FiniteAutomaton::state
-{
-	int state_id;
-	//Maybe use vectors
-
-	vector<tranzition> tranz;
-	int nr_tranz;
-	bool f_state;
-};
-
 void FiniteAutomaton::add_tranzition()
 {
 	int s1, s2;
@@ -24,7 +8,7 @@ void FiniteAutomaton::add_tranzition()
 	int n = ++(pstates[s1].nr_tranz);
 	tranzition toAdd;
 	toAdd.letter = l;
-	toAdd.next_state = &pstates[s2];
+	toAdd.next_state_id = s2;
 
 	//Check if the letter is new tot the alphabet
 	if (alphabet.empty())
@@ -51,16 +35,41 @@ void FiniteAutomaton::add_tranzition()
 	}
 }
 
+void FiniteAutomaton::add_state(int nr_states)
+{
+	//Get the last state id
+	int last_state = -1;
+	if (!pstates.empty())
+		last_state = pstates.size() -1;
+
+	//Create a new empty state
+	state toAdd;
+	toAdd.state_id = last_state+1;
+	toAdd.nr_tranz = 0;
+	toAdd.f_state = false;
+
+	//Add nr_states of states to the array of current states
+	for (int i = 0; i < nr_states; i++)
+	{
+		pstates.push_back(toAdd);
+		//Iterate the state id
+		toAdd.state_id++;
+	}
+}
+
 bool FiniteAutomaton::check_word(char *word)
 {
-	//Empty function queue
+	//Empty function queue and reset variables
 	while (!q.empty())
 		q.pop();
+	spacing = 0;
 
 	//Add initial state to queue and call check function
-	check_word_params cwp{ initial,0 };
+	check_word_params cwp{ initial->state_id,0 };
 	q.push(cwp);
 	bool result = priv_check_word(word);
+
+	//Print acordingly
 	cout << "The word : " << word << " is " << (result ? "correct" : "incorrect") << endl;
 	return result;
 }
@@ -96,12 +105,13 @@ FiniteAutomaton * FiniteAutomaton::export_DFA(void)
 		letter_state x;
 		x.insert();
 	}*/
+	return NULL;
 }
 
 void FiniteAutomaton::display_automaton()
 {
 	//Verifiy that the machine is initialized
-	if (pstates == NULL)
+	if (pstates.empty())
 	{
 		return;
 	}
@@ -122,7 +132,7 @@ void FiniteAutomaton::display_automaton()
 		//Show all the tranzitions available from this node
 		for (int j = 0; j < pstates[i].nr_tranz; j++)
 		{
-			cout << "On letter: " << pstates[i].tranz[j].letter << " go to " << pstates[i].tranz[j].next_state->state_id << endl;
+			cout << "On letter: " << pstates[i].tranz[j].letter << " go to " << pstates[pstates[i].tranz[j].next_state_id].state_id << endl;
 		}
 		cout << endl;
 	}
@@ -131,26 +141,16 @@ void FiniteAutomaton::display_automaton()
 
 int FiniteAutomaton::initialize()
 {
-	if (pstates != NULL)
+	if (!pstates.empty())
 	{
 		cout << "Machine already initialized!";
 		return -1;
 	}
 
 	//Read the number of states and allocate them
-	cout << "Numar de stari: ";
+	cout << "Number of states: ";
 	cin >> nr_states;
-	pstates = new state[nr_states];
-	
-	if (pstates == NULL)
-		return -1;
-		//Initialise every node vith default values
-	for (int i = 0; i < nr_states; i++)
-	{
-		pstates[i].state_id = i;
-		pstates[i].nr_tranz = 0;
-		pstates[i].f_state = false;
-	}
+	add_state(nr_states);
 
 	//Set initial state
 	set_initial();
@@ -165,7 +165,7 @@ int FiniteAutomaton::initialize()
 	}
 
 	//Tranzitions
-	cout << "Numar tranzitii: ";
+	cout << "Number of tranzitions: ";
 	cin >> x;
 	cout << "Tranzitii 'stare 1' 'stare 2' 'litera'\n";
 
@@ -198,7 +198,7 @@ bool FiniteAutomaton::priv_check_word(char * word)
 	q.pop();
 
 	//Take the needed parameters
-	state *cur_state = cwp.cur_state;
+	state *cur_state = &pstates[cwp.cur_state_id];
 	int wpoz = cwp.wpoz;
 	int len = strlen(word);
 
@@ -229,7 +229,7 @@ bool FiniteAutomaton::priv_check_word(char * word)
 		{
 			//Available tranzition
 			//Add data to struct then to the queue
-			cwp.cur_state = cur_state->tranz[i].next_state;
+			cwp.cur_state_id = cur_state->tranz[i].next_state_id;
 			cwp.wpoz = wpoz + 1;
 			q.push(cwp);
 		}

@@ -5,6 +5,7 @@
 #include <queue>
 #include <vector>
 #include <map>
+#include <iterator>
 
 using namespace std;
 
@@ -12,15 +13,28 @@ using namespace std;
 
 class FiniteAutomaton
 {
-	struct tranzition;
-	struct state;
+	struct tranzition
+	{
+		int next_state_id;
+		char letter;
+	};
+	struct state
+	{
+		int state_id;
+		//Maybe use vectors
+
+		vector<tranzition> tranz;
+		int nr_tranz;
+		bool f_state;
+	};
 	struct check_word_params
 	{
-		state *cur_state;
+		int cur_state_id;
 		int wpoz;
 	};
 
-	state * pstates, *initial;
+	vector<state> pstates;
+	state *initial;
 	int nr_states, spacing;
 	queue<check_word_params> q;
 	vector<char> alphabet;
@@ -30,7 +44,7 @@ class FiniteAutomaton
 public:
 	FiniteAutomaton()
 	{
-		pstates = initial = NULL;
+		initial = NULL;
 		spacing = 0;
 	}
 	~FiniteAutomaton() {
@@ -41,6 +55,7 @@ public:
 	void set_initial(void);
 	void toggle_final(void);
 	void add_tranzition(void);
+	void add_state(int nr_states);
 	void del_tranzition(){}
 	int initialize(void);
 	void display_alphabet(void);

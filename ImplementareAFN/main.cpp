@@ -58,7 +58,7 @@ int main()
 			fa.check_word(word);
 			break;
 		case 6:
-			cout << (fa.check_nedet() ? "AFN !" : "AFD !")<<endl;
+			cout << (fa.check_nedet() ? "NFA !" : "DFA !")<<endl;
 			break;
 		default:
 			cout << "Invalid command type 0 for help"<<endl;

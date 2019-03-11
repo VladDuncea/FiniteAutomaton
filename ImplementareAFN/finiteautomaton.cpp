@@ -10,7 +10,7 @@ void FiniteAutomaton::add_tranzition()
 	toAdd.letter = l;
 	toAdd.next_state_id = s2;
 
-	//Check if the letter is new tot the alphabet
+	//Check if the letter is new to the alphabet
 	if (alphabet.empty())
 	{
 		//First letter in alphabet
@@ -97,14 +97,35 @@ FiniteAutomaton * FiniteAutomaton::export_DFA(void)
 		return NULL;
 	}
 
-	typedef map<char, char[10]> letter_state;
+	typedef map<char, vector<int>> letter_state;
 	map<int, letter_state>  nfa_table;
 
-	/*for (int i = 0; i < nr_states; i++)
+	for (int i = 0; i < nr_states; i++)
 	{
 		letter_state x;
-		x.insert();
-	}*/
+		//Jump over states with no tranzitions
+		int nr_tranz = pstates[i].nr_tranz;
+		if (nr_tranz == 0)
+			continue;
+		//Current letter
+		char letter = pstates[i].tranz[0].letter;
+		vector<int> to_states;
+
+		for (int j = 0; j < nr_tranz; j++)
+		{
+			//We hit a new letter
+			if (pstates[i].tranz[j].letter != letter)
+			{
+				//x.insert(letter,to_states);
+				//Update current letter
+				letter = pstates[i].tranz[j].letter;
+			}
+			to_states.push_back(pstates[i].tranz[j].next_state_id);
+
+			
+		}
+		
+	}
 	return NULL;
 }
 

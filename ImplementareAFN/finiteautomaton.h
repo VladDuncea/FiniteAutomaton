@@ -21,7 +21,6 @@ class FiniteAutomaton
 	struct state
 	{
 		int state_id;
-		//Maybe use vectors
 
 		vector<tranzition> tranz;
 		int nr_tranz;

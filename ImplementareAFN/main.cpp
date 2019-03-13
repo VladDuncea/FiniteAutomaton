@@ -29,6 +29,7 @@ int main()
 			cout << "4 - add tranzitions" << endl;
 			cout << "5 - test word" << endl;
 			cout << "6 - check if the automaton is nedeterministic" << endl;
+			cout << "7 - NFA to DFA" << endl;
 			cout <<endl<< "0 - clear console and reshow menu" << endl;
 			break;
 		case 1:
@@ -59,6 +60,9 @@ int main()
 			break;
 		case 6:
 			cout << (fa.check_nedet() ? "NFA !" : "DFA !")<<endl;
+			break;
+		case 7:
+			fa.export_DFA();
 			break;
 		default:
 			cout << "Invalid command type 0 for help"<<endl;

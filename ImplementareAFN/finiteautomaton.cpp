@@ -116,16 +116,36 @@ FiniteAutomaton * FiniteAutomaton::export_DFA(void)
 			//We hit a new letter
 			if (pstates[i].tranz[j].letter != letter)
 			{
-				//x.insert(letter,to_states);
+				x[letter] = to_states;
 				//Update current letter
 				letter = pstates[i].tranz[j].letter;
 			}
 			to_states.push_back(pstates[i].tranz[j].next_state_id);
+		}
+		//Add the last letter
+		x[letter] = to_states;
+		nfa_table[i] = x;
+		
+	}
 
+	cout << nfa_table[0].size()<<endl;
+	for (auto &iterator : nfa_table)
+	{
+		cout << iterator.first << " ";
+		cout << endl;
+		for (auto &iterator2 : iterator.second)
+		{
+			cout << " "<< iterator2.first;
+			cout << endl;
+			for (auto &iterator3 : iterator2.second)
+			{
+				cout << "  "<< iterator3<<" ";
+			}
 			
 		}
 		
 	}
+
 	return NULL;
 }
 

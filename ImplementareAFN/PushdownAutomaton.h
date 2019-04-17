@@ -44,6 +44,7 @@ class PushdownAutomaton : public Automaton
 	vector<char> alphabet;
 
 	//Private functions
+	bool privCheckWord(char *word);
 	static bool tranz_sort(tranzition a, tranzition b);
 
 public:

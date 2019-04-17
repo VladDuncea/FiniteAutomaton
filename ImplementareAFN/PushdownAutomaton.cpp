@@ -2,6 +2,75 @@
 
 
 
+bool PushdownAutomaton::privCheckWord(char * word)
+{
+	//If queue is empty there is nothing left to check
+	if (q.empty())
+		return false;
+
+	//Read front of queue
+	check_word_params cwp = q.front();
+	check_word_params params = cwp;
+	q.pop();
+
+	//Take the needed parameters
+	state *cur_state = &pstates[params.cur_state_id];
+	int wpoz = params.wpoz;
+	int len = strlen(word);
+
+	//Lambda word
+	if (wpoz >= len)
+	{
+		
+		if (cur_state->f_state && params.s.empty())
+		{
+				cout << "State: " << cur_state->state_id << "| Word: " << LAMBDA << " TOS: " << LAMBDA << endl;
+				return true;
+		}
+			
+	}
+
+	//Empty stack
+	if(params.s.empty())
+		return privCheckWord(word);
+
+	//Show the current run data
+	if (wpoz < len)
+		cout << "State: " << cur_state->state_id << "| Word: " << word + wpoz<<" TOS: "<< params.s.top()<<endl;
+	else
+		cout << "State: " << cur_state->state_id << "| Word: " << LAMBDA <<" TOS: "<< params.s.top()<<endl;
+	//Check if a tranzition is available
+	for (int i = 0; i < cur_state->nr_tranz; i++)
+	{
+		tranzition &t = cur_state->tranz[i];
+		params = cwp;
+		if ((t.letter == LAMBDA ||(wpoz < len && t.letter == word[wpoz]))&& params.s.top() == t.stackTop)
+		{
+			//Available tranzition
+			//Add data to struct then to the queue
+			//Take out Top of stack
+			params.s.pop();
+			//Put the new data in
+			if (t.stackAdd[0] != LAMBDA)
+			{
+				for (int i = t.stackAdd.size()-1; i >= 0; i--)
+				{
+					params.s.push(t.stackAdd[i]);
+				}
+			}
+				
+			params.cur_state_id = t.next_state_id;
+			//Advance letter only if we did not go through a lambda transition
+			if(t.letter != LAMBDA)
+				params.wpoz = wpoz + 1;
+			q.push(params);
+		}
+	}
+
+	//Cicle until queue is empty
+	return privCheckWord(word);
+}
+
 bool PushdownAutomaton::tranz_sort(tranzition a, tranzition b)
 {
 	//Sort by tranzitions letter
@@ -23,7 +92,6 @@ PushdownAutomaton::PushdownAutomaton()
 	spacing = 0;
 	nr_states = 0;
 }
-
 
 PushdownAutomaton::~PushdownAutomaton()
 {
@@ -194,7 +262,21 @@ void PushdownAutomaton::display_automaton(void)
 
 bool PushdownAutomaton::check_word(char * word)
 {
-	return false;
+	//Empty function queue and reset variables
+	while (!q.empty())
+		q.pop();
+	//spacing = 0;
+
+	//Add initial state to queue and call check function
+	check_word_params cwp{ pstates[initial_state_id].state_id,0 };
+	//Place Z0 at the bottom of the stack
+	cwp.s.push('z');
+	q.push(cwp);
+	bool result = privCheckWord(word);
+
+	//Print acordingly
+	cout << "The word : " << word << " is " << (result ? "correct" : "incorrect") << endl;
+	return result;
 }
 
 bool PushdownAutomaton::check_nedet(void)

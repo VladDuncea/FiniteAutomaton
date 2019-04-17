@@ -118,11 +118,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Automaton.cpp" />
     <ClCompile Include="finiteautomaton.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PushdownAutomaton.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Automaton.h" />
     <ClInclude Include="finiteautomaton.h" />
+    <ClInclude Include="PushdownAutomaton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

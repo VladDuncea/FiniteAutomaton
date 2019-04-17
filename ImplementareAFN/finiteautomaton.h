@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <iterator>
+#include <algorithm>
 
 using namespace std;
 
@@ -21,7 +22,6 @@ class FiniteAutomaton
 	struct state
 	{
 		int state_id;
-		//Maybe use vectors
 
 		vector<tranzition> tranz;
 		int nr_tranz;
@@ -34,27 +34,27 @@ class FiniteAutomaton
 	};
 
 	vector<state> pstates;
-	state *initial;
+	int initial_state_id;
 	int nr_states, spacing;
 	queue<check_word_params> q;
 	vector<char> alphabet;
+
 	bool priv_check_word(char *);
 	static bool tranz_sort(tranzition, tranzition);
 
 public:
 	FiniteAutomaton()
 	{
-		initial = NULL;
+		initial_state_id =0;
 		spacing = 0;
+		nr_states = 0;
 	}
-	~FiniteAutomaton() {
-		//if (pstates != NULL)
-			//delete[] pstates;
-	}
+	
+	~FiniteAutomaton() {}
 
-	void set_initial(void);
+	void set_initial(int);
 	void toggle_final(void);
-	void add_tranzition(void);
+	void add_tranzition(int,int,char);
 	void add_state(int nr_states);
 	void del_tranzition(){}
 	int initialize(void);

@@ -128,6 +128,9 @@
     <ClInclude Include="finiteautomaton.h" />
     <ClInclude Include="PushdownAutomaton.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Pushdown.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

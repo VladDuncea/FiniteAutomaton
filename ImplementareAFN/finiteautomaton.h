@@ -7,12 +7,13 @@
 #include <map>
 #include <iterator>
 #include <algorithm>
+#include "Automaton.h"
 
 using namespace std;
 
 
 
-class FiniteAutomaton
+class FiniteAutomaton : public Automaton
 {
 	struct tranzition
 	{
@@ -50,10 +51,10 @@ public:
 		nr_states = 0;
 	}
 	
-	~FiniteAutomaton() {}
+	~FiniteAutomaton();
 
-	void set_initial(int);
-	void toggle_final(void);
+	void set_initial(int state);
+	void toggle_final(int state,bool val);
 	void add_tranzition(int,int,char);
 	void add_state(int nr_states);
 	void del_tranzition(){}

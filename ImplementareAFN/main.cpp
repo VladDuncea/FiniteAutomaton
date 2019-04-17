@@ -3,18 +3,49 @@
 #include <string.h>
 #include <queue>
 #include "finiteautomaton.h"
+#include "PushdownAutomaton.h"
 
 using namespace std;
 
+enum AutomatonType
+{
+	AUTOMATON_FINITE = 0,
+	AUTOMATON_PUSHDOWN = 1
+};
+
 int main()
 {
-	FiniteAutomaton *fa;
-	fa = new FiniteAutomaton;
-	cout << "Duncea Vlad- Finite Automaton Aplication" << endl;
+	int input;
+	Automaton *fa;
+	AutomatonType aType;
+	//General information
+	cout << "Duncea Vlad- Finite+Pushdown Automaton Aplication" << endl;
 	cout << "You will first need to initialise the automaton with basic information." << endl;
-	cout << "States and transitions can be also added later." << endl;
+	cout << "States and transitions can also be added later." << endl;
+	cout << "0-Finite || 1-Pushdow" << endl;
+	cout << "Automaton type: ";
+	cin >> input;
+
+	switch (input)
+	{
+	case AUTOMATON_FINITE:
+		fa = new FiniteAutomaton;
+		aType = AUTOMATON_FINITE;
+		break;
+	case AUTOMATON_PUSHDOWN:
+		fa = new PushdownAutomaton;
+		aType = AUTOMATON_PUSHDOWN;
+		break;
+	default:
+		cout << "wrong input";
+		return 0;
+	}
+	
+	//Get critical data about automaton
 	fa->initialize();
-	int input = 0;
+
+	//Start menu loop
+	input = 0;
 	while (true)
 	{
 		int info;
@@ -30,7 +61,8 @@ int main()
 			cout << "4 - add tranzitions" << endl;
 			cout << "5 - test word" << endl;
 			cout << "6 - check if the automaton is nedeterministic" << endl;
-			cout << "7 - NFA to DFA" << endl;
+			if(aType == AUTOMATON_FINITE)
+				cout << "7 - NFA to DFA" << endl;
 			cout << endl << "0 - clear console and reshow menu" << endl;
 			break;
 		case 1:
@@ -54,7 +86,7 @@ int main()
 				int s1, s2;
 				char l;
 				cin >> s1 >> s2 >> l;
-				fa->add_tranzition(s1, s2, l);
+				((FiniteAutomaton*)fa)->add_tranzition(s1, s2, l);
 			}
 
 			break;
@@ -69,7 +101,9 @@ int main()
 			cout << (fa->check_nedet() ? "NFA !" : "DFA !") << endl;
 			break;
 		case 7:
-			fa = fa->export_DFA();
+			if(aType==AUTOMATON_FINITE)
+				fa = ((FiniteAutomaton*)fa)->export_DFA();
+
 			break;
 		default:
 			cout << "Invalid command type 0 for help" << endl;

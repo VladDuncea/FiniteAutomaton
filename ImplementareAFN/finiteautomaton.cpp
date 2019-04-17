@@ -252,7 +252,7 @@ int FiniteAutomaton::initialize()
 		return -1;
 	}
 
-	int x;
+	int x,y;
 
 	//Read the number of states and allocate them
 	cout << "Number of states: ";
@@ -270,7 +270,8 @@ int FiniteAutomaton::initialize()
 	cin >> x;
 	for (int i = 0; i < x; i++)
 	{
-		toggle_final();
+		cin >> y;
+		toggle_final(y,true);
 	}
 
 	//Tranzitions
@@ -290,7 +291,6 @@ int FiniteAutomaton::initialize()
 
 void FiniteAutomaton::display_alphabet(void)
 {
-
 	cout<< "Used alphabet: ";
 	for (const auto &x : alphabet)
 	{
@@ -359,6 +359,11 @@ bool FiniteAutomaton::tranz_sort(tranzition a, tranzition b)
 	return (a.letter < b.letter);
 }
 
+FiniteAutomaton::~FiniteAutomaton()
+{
+
+}
+
 void FiniteAutomaton::set_initial(int val)
 {
 	//Check if state exists
@@ -368,11 +373,9 @@ void FiniteAutomaton::set_initial(int val)
 	initial_state_id = val;
 }
 
-void FiniteAutomaton::toggle_final()
+void FiniteAutomaton::toggle_final(int state, bool val)
 {
-	int fs;
-	cin >> fs;
-	if (fs >= 0 && fs < nr_states)
-		pstates[fs].f_state = !pstates[fs].f_state;
+	if (state >= 0 && state < nr_states)
+		pstates[state].f_state = val;
 }
 

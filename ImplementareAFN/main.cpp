@@ -112,8 +112,9 @@ int main()
 		cout << "Menu option: ";
 		if (!(cin >> input))
 		{
+			//TODO known bug: if you type letters while in the menu the console crashes
 			input = 0;
-			exit(-1);
+			exit(-1); //Only known fix is to end the application
 			//cin.ignore(INT_MAX);
 
 		}

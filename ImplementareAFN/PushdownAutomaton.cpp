@@ -1,7 +1,5 @@
 #include "PushdownAutomaton.h"
 
-
-
 bool PushdownAutomaton::privCheckWord(char * word)
 {
 	//If queue is empty there is nothing left to check

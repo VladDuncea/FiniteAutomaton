@@ -13,29 +13,30 @@
 
 using namespace std;
 
+//Data types
+typedef struct
+{
+	int next_state_id;
+	char letter, stackTop;
+	string stackAdd;
+}tranzition;
+typedef struct
+{
+	int state_id;
+
+	vector<tranzition> tranz;
+	int nr_tranz;
+	bool f_state;
+}state;
+typedef struct check_word_params
+{
+	int cur_state_id;
+	int wpoz;
+	stack<char> s;
+};
+
 class PushdownAutomaton : public Automaton
 {
-	struct tranzition
-	{
-		int next_state_id;
-		char letter,stackTop;
-		string stackAdd;
-	};
-	struct state
-	{
-		int state_id;
-
-		vector<tranzition> tranz;
-		int nr_tranz;
-		bool f_state;
-	};
-	struct check_word_params
-	{
-		int cur_state_id;
-		int wpoz;
-		stack<char> s;
-	};
-
 	//Private variables
 	vector<state> pstates;
 	int initial_state_id;
